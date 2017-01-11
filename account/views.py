@@ -1,9 +1,12 @@
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
-from django.shortcuts import render
+from urlparse import urlparse
+
 from django.contrib import auth
+from django.shortcuts import render
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import User
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
+
 
 @csrf_exempt
 def login(request):
@@ -27,3 +30,10 @@ def login(request):
             return render(request, 'login.html', context)
     else:
         return HttpResponseBadRequest()
+
+@csrf_exempt
+def logout(request):
+    auth.logout(request)
+    referer = urlparse(request.META.get('HTTP_REFERER', reverse('index')))
+    next_page = referer.path
+    return HttpResponseRedirect(next_page)
