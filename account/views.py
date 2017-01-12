@@ -10,30 +10,35 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadReque
 
 @csrf_exempt
 def login(request):
-    interface = request.get_full_path()
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('index'))
     if request.method == 'GET':
         is_auth_failed = False
+        interface = request.get_full_path()
         next_page = request.GET.get('next', reverse('index'))
-        context = {'is_auth_failed': is_auth_failed, 'next_page': next_page, 'interface': interface}
+        context = dict(is_auth_failed=is_auth_failed, interface=interface, next_page=next_page)
         return render(request, 'login.html', context)
     elif request.method == 'POST':
+        interface = request.get_full_path()
+        next_page = request.POST.get('next', reverse('index'))
         username = request.POST.get('username')
         password = request.POST.get('password')
-        next_page = request.POST.get('next', reverse('index'))
         user = auth.authenticate(username=username, password=password)
         if user:
             auth.login(request, user)
             return HttpResponseRedirect(next_page)
         else:
             is_auth_failed = True
-            context = {'is_auth_failed': is_auth_failed, 'next_page': next_page, 'interface': interface}
+            context = dict(is_auth_failed=is_auth_failed, interface=interface, next_page=next_page)
             return render(request, 'login.html', context)
     else:
         return HttpResponseBadRequest()
 
 @csrf_exempt
 def logout(request):
-    auth.logout(request)
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('login'))
     referer = urlparse(request.META.get('HTTP_REFERER', reverse('index')))
     next_page = referer.path
+    auth.logout(request)
     return HttpResponseRedirect(next_page)
