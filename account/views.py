@@ -4,11 +4,9 @@ from django.contrib import auth
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 
 
-@csrf_exempt
 def login(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse('index'))
@@ -34,7 +32,6 @@ def login(request):
     else:
         return HttpResponseBadRequest()
 
-@csrf_exempt
 def logout(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect(reverse('login'))

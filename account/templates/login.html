@@ -8,6 +8,7 @@
     <div style="color:red">Login Failed</div>
     {% endif %}
     <form action="{{ interface }}" method="POST">
+        {% csrf_token %}
         <input name="next" type="hidden" value="{{ next_page }}">
         username:&nbsp
         <input name="username" type="text"/><br/>
