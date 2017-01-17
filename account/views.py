@@ -4,19 +4,22 @@ from django.contrib import auth
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 
+from baobaocloud.utils.decorators import nologin_required, method_required
 
+
+@nologin_required()
+@method_required('GET','POST')
 def login(request):
-    if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('index'))
     if request.method == 'GET':
         is_auth_failed = False
         interface = request.get_full_path()
         next_page = request.GET.get('next', reverse('index'))
         context = dict(is_auth_failed=is_auth_failed, interface=interface, next_page=next_page)
         return render(request, 'login.html', context)
-    elif request.method == 'POST':
+    else:
         interface = request.get_full_path()
         next_page = request.POST.get('next', reverse('index'))
         username = request.POST.get('username')
@@ -29,12 +32,10 @@ def login(request):
             is_auth_failed = True
             context = dict(is_auth_failed=is_auth_failed, interface=interface, next_page=next_page)
             return render(request, 'login.html', context)
-    else:
-        return HttpResponseBadRequest()
 
+@login_required(redirect_field_name=None, login_url='/account/login/')
+@method_required('GET')
 def logout(request):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('login'))
     referer = urlparse(request.META.get('HTTP_REFERER', reverse('index')))
     next_page = referer.path
     auth.logout(request)
