@@ -1,15 +1,64 @@
 {% extends 'layouts/base.html' %}
 
+{% block style %}
+<style>
+    .gray {
+        color: gray;
+    }
+    .black {
+        color: black;
+    }
+</style>
+{% endblock %}
+
 {% block body %}
-{% if is_auth_failed %}
-<div style="color:red">Login Failed</div>
+{% if error_msg %}
+<div style="color:red">{{ error_msg }}</div>
 {% endif %}
 <form action="{{ interface }}" method="POST">
     {% csrf_token %}
     <input name="next" type="hidden" value="{{ next_page }}">
-    username:&nbsp
-    <input name="username" type="text"/><br/>
-    password:&nbsp
-    <input name="password" type="password"/><br/>
+    <table>
+        <tr>
+            <td><input id="1" name="username" type="text" value="用户名" class="gray" onfocus="enter(this.id, '用户名');" onblur="leave(this.id, '用户名');"/></td>
+        </tr>
+        <tr>
+            <td><input id="2" name="password" type="text" value="密码" class="gray" onfocus="enter(this.id, '密码');" onblur="leave(this.id, '密码');"/></td>
+        </tr>
+        <tr>
+            <td><input id="3" name="verify_code" type="text" value="验证码" class="gray" onfocus="enter(this.id, '验证码');" onblur="leave(this.id, '验证码');"/></td>
+            <td><img src="/verify/80/32/"><br/></td>
+        </tr>
+    </table>
     <input type="submit" value="提交">
+</form>
+{% endblock %}
+
+{% block script %}
+<script>
+    function enter(id, value) {
+        var obj = document.getElementById(id);
+        obj.className = "black";
+        if(obj.value == value) {
+            obj.value = "";
+        }
+        if(obj.id == "2") {
+            obj.type = "password";
+        }
+    }
+    function leave(id, value) {
+        var obj = document.getElementById(id);
+        if(obj.value.length == 0 || obj.value.trim() == "") {
+            obj.className = "gray";
+            obj.value = value;
+            if(obj.id == "2") {
+                obj.type = "text";
+            }
+        }else {
+            if(obj.id == "2") {
+                obj.type = "password";
+            }
+        }
+    }
+</script>
 {% endblock %}

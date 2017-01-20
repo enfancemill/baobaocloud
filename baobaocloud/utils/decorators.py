@@ -1,6 +1,6 @@
 from functools import wraps
 
-from django.http import HttpResponseRedirect, HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
 
 
 def nologin_required(redirect_url='/'):

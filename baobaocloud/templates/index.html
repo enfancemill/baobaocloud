@@ -1,5 +1,14 @@
 {% extends 'layouts/base.html' %}
 
 {% block body %}
+<div style="float:right">
+    {% if user.is_authenticated %}
+    <span>{{ user.username }}<span>
+    <a href="/account/logout/">登出</a>
+    {% else %}
+    <a href="/account/login/">登录</a>
+    <a href="/account/register/">注册</a>
+    {% endif %}
+</div>
 <h1>Hello world!</h1>
 {% endblock %}

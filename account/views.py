@@ -1,37 +1,42 @@
 from urlparse import urlparse
 
 from django.contrib import auth
-from django.shortcuts import render
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from django.shortcuts import render
 
-from baobaocloud.utils.decorators import nologin_required, method_required
+from baobaocloud.utils.decorators import method_required, nologin_required
+from baobaocloud.utils.shortcuts import get_msg_code
 
 
 @nologin_required()
 @method_required('GET','POST')
 def login(request):
     if request.method == 'GET':
-        is_auth_failed = False
+        error_msg = None
         interface = request.get_full_path()
         next_page = request.GET.get('next', reverse('index'))
-        context = dict(is_auth_failed=is_auth_failed, interface=interface, next_page=next_page)
+        context = dict(error_msg=error_msg, interface=interface, next_page=next_page)
         return render(request, 'login.html', context)
     else:
         interface = request.get_full_path()
         next_page = request.POST.get('next', reverse('index'))
+        verify_code = request.POST.get('verify_code')
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = auth.authenticate(username=username, password=password)
-        if user:
-            auth.login(request, user)
-            return HttpResponseRedirect(next_page)
+        if request.session['verify_code'] == verify_code.lower():
+            user = auth.authenticate(username=username, password=password)
+            if user:
+                auth.login(request, user)
+                return HttpResponseRedirect(next_page)
+            else:
+                error_msg = get_msg_code(2)
         else:
-            is_auth_failed = True
-            context = dict(is_auth_failed=is_auth_failed, interface=interface, next_page=next_page)
-            return render(request, 'login.html', context)
+            error_msg = get_msg_code(3)
+        context = dict(error_msg=error_msg, interface=interface, next_page=next_page)
+        return render(request, 'login.html', context)
 
 @login_required(redirect_field_name=None, login_url='/account/login/')
 @method_required('GET')
