@@ -23,7 +23,7 @@ def get_string_imageflow(chars, image_width=80, image_height=32):
     font_size = int(min(image_width / chars_length, image_height) * 0.9)
     image_bgcolor = (random.randint(200, 255), random.randint(200, 255), random.randint(200, 255))
     image = Image.new('RGB', (image_width, image_height), image_bgcolor)
-    font = ImageFont.truetype('consola.ttf', font_size)
+    font = ImageFont.truetype('consolas/consola.ttf', font_size)
     draw = ImageDraw.Draw(image)
     for i, char in enumerate(chars):
         char_color = (random.randint(0, 150), random.randint(0, 150), random.randint(0, 150))

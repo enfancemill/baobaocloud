@@ -23,7 +23,7 @@ def login(request):
     else:
         interface = request.get_full_path()
         next_page = request.POST.get('next', reverse('index'))
-        verify_code = request.POST.get('verify_code')
+        verify_code = request.POST.get('verify_code', '')
         username = request.POST.get('username')
         password = request.POST.get('password')
         if request.session['verify_code'] == verify_code.lower():
