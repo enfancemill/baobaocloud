@@ -66,13 +66,16 @@ def register(request):
         email = request.POST.get('email')
         verify_code = request.POST.get('verify_code', '')
         if request.session['verify_code'] == verify_code.lower():
-            try:
-                user = User.objects.create_user(username, email, password)
-            except IntegrityError:
-                error_msg = get_msg_code(4)
+            if not User.objects.filter(email=email):
+                try:
+                    user = User.objects.create_user(username, email, password)
+                except IntegrityError:
+                    error_msg = get_msg_code(4)
+                else:
+                    auth.login(request, user)
+                    return HttpResponseRedirect(next_page)
             else:
-                auth.login(request, user)
-                return HttpResponseRedirect(next_page)
+                error_msg = get_msg_code(5)
         else:
             error_msg = get_msg_code(3)
         context = dict(error_msg=error_msg, interface=interface, next_page=next_page)
