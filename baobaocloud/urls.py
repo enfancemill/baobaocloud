@@ -20,6 +20,8 @@ from . import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^verify/(\d+)/(\d+)/', views.verify, name='verify'),
+    url(r'^actmail/', views.actmail, name='actmail'),
+    url(r'^send_actmail/', views.send_actmail, name='send_actmail'),
     url(r'^admin/', admin.site.urls),
     url(r'^account/', include('account.urls')),
 ]
