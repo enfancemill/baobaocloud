@@ -9,9 +9,9 @@ from django.db.utils import IntegrityError
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
 
-from baobaocloud.utils.const import ActMail
-from baobaocloud.utils.decorators import method_required, nologin_required
-from baobaocloud.utils.shortcuts import get_msg_code
+from baobaologic.const import ActMail
+from baobaologic.decorators import method_required, nologin_required
+from baobaologic.shortcuts import get_msg_code
 
 
 @nologin_required()

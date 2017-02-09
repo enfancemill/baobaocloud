@@ -7,7 +7,7 @@ from StringIO import StringIO
 from django.contrib.sessions.models import Session
 from PIL import Image, ImageDraw, ImageFont
 
-from baobaocloud.utils.const import msg_code
+from baobaologic.const import msg_code
 
 
 VERIFY_CODE_CHARS = string.ascii_letters + string.digits
