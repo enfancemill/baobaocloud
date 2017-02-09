@@ -1,13 +1,15 @@
-from urlparse import urlparse
+from urlparse import urljoin, urlparse
 
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.db.utils import IntegrityError
-from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import render
 
+from baobaocloud.utils.const import ActMail
 from baobaocloud.utils.decorators import method_required, nologin_required
 from baobaocloud.utils.shortcuts import get_msg_code
 
@@ -68,11 +70,31 @@ def register(request):
                 except IntegrityError:
                     error_msg = get_msg_code(4)
                 else:
-                    context = dict(is_active=False, email=email)
-                    return render(request, 'active.html', context)
+                    context = dict(is_activated=False, email=email)
+                    return render(request, 'activate.html', context)
             else:
                 error_msg = get_msg_code(5)
         else:
             error_msg = get_msg_code(3)
         context = dict(error_msg=error_msg, interface=interface)
         return render(request, 'register.html', context)
+
+@nologin_required()
+@method_required('GET', 'POST')
+def activate(request):
+    if request.method == 'GET':
+        email = request.GET.get('email')
+        User.objects.filter(email=email).update(is_active=True)
+        context = dict(is_activated=True)
+        return render(request, 'activate.html', context)
+    else:
+        email = request.POST.get('email')
+        activate_url = urljoin(request.get_raw_uri(), '?email=%s' % email).encode('utf-8')
+        send_mail(
+            ActMail.subject,
+            ActMail.content + activate_url,
+            ActMail.source,
+            [email],
+            fail_silently=True,
+        )
+        return HttpResponse('ok')
