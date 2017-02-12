@@ -4,7 +4,7 @@
 {% if error_msg %}
 <div style="color:red">{{ error_msg }}</div>
 {% endif %}
-<form action="{{ interface }}" method="POST">
+<form action="{{ api_current }}" method="POST">
     {% csrf_token %}
     <input name="next" type="hidden" value="{{ next_page }}">
     <table>
@@ -16,11 +16,11 @@
         </tr>
         <tr>
             <td><input name="verify_code" type="text" placeholder="验证码" /></td>
-            <td><img src="/api/captcha/80/32/"><br/></td>
+            <td><img src="{{ api_captcha }}"><br/></td>
         </tr>
         <tr>
             <td><input type="submit" value="登录"></td>
-            <td><a href="/account/register/">没有帐号?立即注册</a></td>
+            <td><a href="{{ api_register }}">没有帐号?立即注册</a></td>
         </tr>
     </table>
 </form>

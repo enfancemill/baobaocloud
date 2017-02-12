@@ -13,6 +13,7 @@ def nologin_required(redirect_url='/'):
         return wrapper
     return decorator
 
+
 def method_required(*method):
     def decorator(func):
         @wraps(func)

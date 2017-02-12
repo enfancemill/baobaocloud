@@ -9,14 +9,15 @@ from PIL import Image, ImageDraw, ImageFont
 
 from baobaologic.const import msg_code
 
-
 VERIFY_CODE_CHARS = string.ascii_letters + string.digits
+
 
 def get_random_string(length=1, allowed_chars=VERIFY_CODE_CHARS):
     chars = ''
     for i in range(length):
         chars += random.choice(allowed_chars)
     return chars
+
 
 def get_string_imageflow(chars, image_width=80, image_height=32):
     chars_length = len(chars)
@@ -49,6 +50,7 @@ def get_string_imageflow(chars, image_width=80, image_height=32):
     string_imageflow = mstream.getvalue()
     return string_imageflow
 
+
 def get_rest_session_time(session):
     try:
         s = Session.objects.get(session_key=session.session_key)
@@ -59,6 +61,7 @@ def get_rest_session_time(session):
         return rest_session_time
     except Exception:
         return 0
+
 
 def get_msg_code(code):
     return msg_code[code]
