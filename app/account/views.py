@@ -1,3 +1,4 @@
+from hashlib import md5
 from urlparse import urljoin, urlparse
 
 from django.contrib import auth
@@ -101,18 +102,25 @@ def register(request):
 def activate(request):
     if request.method == 'GET':
         email = request.GET.get('email')
-        api_login = reverse('login')
-        User.objects.filter(email=email).update(is_active=True)
-        context = dict(is_activated=True, api_login=api_login)
-        return render(request, 'activate.html', context)
+        sign = request.GET.get('sign')
+        if sign == md5(email + ActMail.secret).hexdigest():
+            api_login = reverse('login')
+            User.objects.filter(email=email).update(is_active=True)
+            context = dict(is_activated=True, api_login=api_login)
+            return render(request, 'activate.html', context)
+        else:
+            return HttpResponseBadRequest()
     else:
         email = request.POST.get('email')
-        activate_url = urljoin(request.get_raw_uri(), '?email=%s' % email).encode('utf-8')
+        sign = md5(email + ActMail.secret).hexdigest()
+        url = request.get_raw_uri()
+        query = '?email=%s&sign=%s' % (email, sign)
+        activate_url = urljoin(url, query).encode('utf-8')
         send_mail(
             ActMail.subject,
             ActMail.content + activate_url,
             ActMail.source,
-            [email],
+            [email,],
             fail_silently=True,
         )
-        return HttpResponse('ok')
+        return HttpResponse('OK')
