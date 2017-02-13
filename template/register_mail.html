@@ -1,42 +1,27 @@
 {% extends 'layouts/base.html' %}
 
-{% block header %}
-{% if is_activated %}
-<meta http-equiv="refresh" content="10; url={{ api_login }}" />
-{% endif %}
-{% endblock %}
-
 {% block body %}
-{% if is_activated %}
-<div>
-    激活成功, 10秒后跳转至登录页面<br/>
-    <a href="{{ api_login }}">立即跳转</a>
-</div>
-{% else %}
 <div>
     激活邮件已发到{{ email }}邮箱,<br/>
     请登录邮箱完成激活。<br/>
     没收到验证邮件?<br/>
     1. 尝试到广告邮件、垃圾邮件目录里找找看<br/>
-    2. 邮箱未收到激活邮件，请<a href="javascript:void(0);" onclick="activate()">再次发送激活邮件</a><br/>
+    2. 邮箱未收到激活邮件，请<a href="javascript:void(0);" onclick="send_register_mail()">再次发送激活邮件</a><br/>
     <hr/>
     <a href="{{ api_login }}">激活完成,立即登录</a>
 </div>
-{% endif %}
 {% endblock %}
 
 {% block script %}
-{% if not is_activated %}
 <script type="text/javascript">
-    function activate() {
+    function send_register_mail() {
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("POST","{{ api_activate }}",true);
+        xmlhttp.open("POST","{{ api_register_mail }}",true);
         xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded")
         xmlhttp.send("email={{ email }}&csrfmiddlewaretoken={{ csrf_token }}");
     }
     window.onload=function(){
-        activate()
+        send_register_mail()
     }
 </script>
-{% endif %}
 {% endblock %}

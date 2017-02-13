@@ -4,7 +4,7 @@
 {% if error_msg %}
 <div style="color:red">{{ error_msg }}</div>
 {% endif %}
-<form action="{{ api_current }}" method="POST">
+<form action="{{ api_login }}" method="POST">
     {% csrf_token %}
     <input name="next" type="hidden" value="{{ next_page }}">
     <table>

@@ -6,5 +6,6 @@ urlpatterns = [
     url(r'^login/$', views.login, name='login'),
     url(r'^logout/$', views.logout, name='logout'),
     url(r'^register/$', views.register, name='register'),
-    url(r'^activate/$', views.activate, name='activate'),
+    url(r'^register/mail/$', views.register_mail, name='register_mail'),
+    url(r'^register/activate/$', views.register_activate, name='register_activate'),
 ]

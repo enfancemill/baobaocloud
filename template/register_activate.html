@@ -1,0 +1,16 @@
+{% extends 'layouts/base.html' %}
+
+{% block header %}
+<meta http-equiv="refresh" content="10; url={{ api_login }}" />
+{% endblock %}
+
+{% block body %}
+<div>
+    {% if not error_msg %}
+    激活成功, 10秒后跳转至登录页面<br/>
+    <a href="{{ api_login }}">立即跳转</a>
+    {% else %}
+    {{ error_msg }}, 10秒后跳转至登录页面<br/>
+    {% endif %}
+</div>
+{% endblock %}
