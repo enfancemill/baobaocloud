@@ -78,8 +78,12 @@ WSGI_APPLICATION = 'baobaocloud.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'db',
+        'USER': 'user',
+        'PASSWORD': 'password',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
     }
 }
 
@@ -127,8 +131,8 @@ STATICFILES_DIRS = [
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'enfancemill@gmail.com'
-EMAIL_HOST_PASSWORD = '22456f78'
-EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'user@example.com'
+EMAIL_HOST_PASSWORD = 'password'
+EMAIL_USE_TLS = False
